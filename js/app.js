@@ -1,9 +1,9 @@
-(function() {
+(function () {
   'use strict';
 
   const movies = [];
 
-  const renderMovies = function() {
+  const renderMovies = function () {
     $('#listings').empty();
 
     for (const movie of movies) {
@@ -55,6 +55,26 @@
       $('.modal-trigger').leanModal();
     }
   };
+
+  $('.btn-large').on('click', function (event){
+    event.preventDefault();
+
+    var input = $('#search').val();
+    console.log(input)
+
+    var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${input}`)
+    $xhr.done(() => {
+      let results = $xhr.responseJSON.Search;
+      console.log(results);
+      if (status !== 200){
+        return;
+      } else {
+        for (var i = 0; i < results.length; i++){
+          
+        }
+      }
+    })
+  })
 
   // ADD YOUR CODE HERE
 })();
