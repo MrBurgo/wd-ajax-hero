@@ -59,22 +59,31 @@
   $('.btn-large').on('click', function (event){
     event.preventDefault();
 
+    movies.length = 0;
+
     var input = $('#search').val();
-    console.log(input)
+    // console.log(input)
 
     var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${input}`)
     $xhr.done(() => {
       let results = $xhr.responseJSON.Search;
-      console.log(results);
-      if (status !== 200){
+
+      // console.log('JSON returns: ', results);
+      if ($xhr.status !== 200){
         return;
       } else {
-        for (var i = 0; i < results.length; i++){
-          
+        for (let i = 0; i < results.length; i++){
+          let movie = results[i];
+          let obj = {};
+          obj.id = movie.imdbID;
+          obj.poster = movie.Poster;
+          obj.title = movie.Title;
+          obj.year = movie.Year;
+          movies.push(obj);
         }
       }
+      renderMovies();
     })
   })
-
   // ADD YOUR CODE HERE
 })();
