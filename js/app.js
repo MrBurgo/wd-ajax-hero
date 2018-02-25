@@ -67,7 +67,7 @@
     var input = $('#search').val();
     var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${input}`)
 
-    // ONCE JSON HAS BEEN RETURNED, BEGIN BUILDING THE INDIVIDUAL MOVIE OBJECTS. ONLY CONTINUES OF STATUS CODE RETURNED IS 200.
+    // ONCE JSON HAS BEEN RETURNED, BEGIN BUILDING THE INDIVIDUAL MOVIE OBJECTS. ONLY CONTINUES IF STATUS CODE RETURNED IS 200.
     $xhr.done(() => {
       let results = $xhr.responseJSON.Search;
       if ($xhr.status !== 200){
