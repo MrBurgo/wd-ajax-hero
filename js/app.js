@@ -60,46 +60,52 @@
   $('.btn-large').on('click', function (event){
     event.preventDefault();
 
-    // START BY EMPTYING THE MOVIES ARRAY, IF ANY MOVIES WERE ALREADY POPULATED
-    movies.length = 0;
+    // CHECK IF A VALID SEARCH TERM HAS BEEN ENTERED. ALERT IF NOT.
+    if ($('#search').val() === '' || $('#search').val().length === 1){
+      alert('Please enter a valid search term')
+    } else {
 
-    // GET JSON BASED ON USER INPUT IN SEARCH BOX
-    var input = $('#search').val();
-    var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${input}`)
+      // START BY EMPTYING THE MOVIES ARRAY, IF ANY MOVIES WERE ALREADY POPULATED
+      movies.length = 0;
 
-    // ONCE JSON HAS BEEN RETURNED, BEGIN BUILDING THE INDIVIDUAL MOVIE OBJECTS. ONLY CONTINUES IF STATUS CODE RETURNED IS 200.
-    $xhr.done(() => {
-      let results = $xhr.responseJSON.Search;
-      if ($xhr.status !== 200){
-        return;
-      } else {
-        for (let i = 0; i < results.length; i++){
-          let movie = results[i];
-          let obj = {};
-          let id = movie.imdbID;
+      // GET JSON BASED ON USER INPUT IN SEARCH BOX
+      var input = $('#search').val();
+      var $xhr = $.getJSON(`https://omdb-api.now.sh/?s=${input}`)
 
-          // POPULATES INDIVIDUAL MOVIE OBJECTS WITH ID, POSTER, TITLE, AND YEAR KEY VALUE PAIRS.
-          obj.id = movie.imdbID;
-          obj.poster = movie.Poster;
-          obj.title = movie.Title;
-          obj.year = movie.Year;
+      // ONCE JSON HAS BEEN RETURNED, BEGIN BUILDING THE INDIVIDUAL MOVIE OBJECTS. ONLY CONTINUES IF STATUS CODE RETURNED IS 200.
+      $xhr.done(() => {
+        let results = $xhr.responseJSON.Search;
+        if ($xhr.status !== 200){
+          return;
+        } else {
+          for (let i = 0; i < results.length; i++){
+            let movie = results[i];
+            let obj = {};
+            let id = movie.imdbID;
 
-          // SEARCHES FOR A NEW JSON OBJECT BASED ON EACH MOVIE'S UNIQUE ID
-          let $newURL = $.getJSON(`https://omdb-api.now.sh/?i=${id}&plot=full`);
+            // POPULATES INDIVIDUAL MOVIE OBJECTS WITH ID, POSTER, TITLE, AND YEAR KEY VALUE PAIRS.
+            obj.id = movie.imdbID;
+            obj.poster = movie.Poster;
+            obj.title = movie.Title;
+            obj.year = movie.Year;
 
-          // ONCE OBJECT IS RETURNED, POPULATES ALREADY EXISTING OBJECTS WITH NEW KEY VALUE PAIR FOR PLOT INFO. ONCE POPULATED, PUSHES OBJECT INTO MOVIES ARRAY AND RENDERS PAGE.
-          $newURL.done(() => {
-            if ($newURL.status !== 200){
-              return;
-            } else {
-              let plot = $newURL.responseJSON.Plot;
-              obj.plot = plot
-              movies.push(obj);
-              renderMovies();
-            }
-          })
+            // SEARCHES FOR A NEW JSON OBJECT BASED ON EACH MOVIE'S UNIQUE ID
+            let $newURL = $.getJSON(`https://omdb-api.now.sh/?i=${id}&plot=full`);
+
+            // ONCE OBJECT IS RETURNED, POPULATES ALREADY EXISTING OBJECTS WITH NEW KEY VALUE PAIR FOR PLOT INFO. ONCE POPULATED, PUSHES OBJECT INTO MOVIES ARRAY AND RENDERS PAGE.
+            $newURL.done(() => {
+              if ($newURL.status !== 200){
+                return;
+              } else {
+                let plot = $newURL.responseJSON.Plot;
+                obj.plot = plot
+                movies.push(obj);
+                renderMovies();
+              }
+            })
+          }
         }
-      }
-    })
+      })
+    }
   })
 })();
